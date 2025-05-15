@@ -1,20 +1,43 @@
-RouteSetter
+<div align='center'>
 
-RouteSetter is a Derail Valley mod that allows you to automatically set a route to a desired destination.
-Installation
+<h1>Route setter</h1>
+<p>RouteSetter is a Derail Valley mod that allows you to automatically set a route to a desired destination. Installation</p>
 
-Install this mod using UMM (Unity Mod Manager).
-How to Use
+<h4> <span> · </span> <a href="https://github.com/JohnD/RouteSetter/blob/master/README.md"> Documentation </a> <span> · </span> <a href="https://github.com/JohnD/RouteSetter/issues"> Report Bug </a> <span> · </span> <a href="https://github.com/JohnD/RouteSetter/issues"> Request Feature </a> </h4>
 
-    Make sure you’ve visited a locomotive at least once since your last load, sleep, or fast travel.
 
-    Equip your comms radio in hand.
+</div>
 
-    Select your desired destination from the list.
+# :notebook_with_decorative_cover: Table of Contents
 
-The route will be automatically set if possible.
-Notes
+- [About the Project](#star2-about-the-project)
+- [Contact](#handshake-contact)
 
-    Tracks with numbers before names (e.g., "01 - Station") are station tracks that don't have a specific backend identifier. These may be unrouteable.
 
-    Routes that require a Y-turn (i.e., reversing at a junction) will not work, due to in-game limitations.
+## :star2: About the Project
+
+### :dart: Features
+- Comms radio mode to set the route
+- Setting the route using shortest path
+
+
+
+
+## :toolbox: Getting Started
+
+### :bangbang: Prerequisites
+
+- Comms radio API<a href="https://www.nexusmods.com/derailvalley/mods/813"> Here</a>
+- Unity mod manager<a href="https://www.nexusmods.com/site/mods/21"> Here</a>
+
+
+### :gear: Installation
+
+Install via UMM
+
+
+## :handshake: Contact
+
+Anton S. - - AntonShteisel@proton.me
+
+Project Link: [https://github.com/zelmer69/RouteSetter/tree/main](https://github.com/zelmer69/RouteSetter/tree/main)
