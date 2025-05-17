@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+*.json
+*.vsidx
+/.vs/Route Setter/CopilotIndices/17.12.53.23981/SemanticSymbols.db-wal
+/.vs/Route Setter/CopilotIndices/17.12.53.23981/SemanticSymbols.db-shm
