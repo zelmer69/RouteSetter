@@ -7,7 +7,7 @@ using DV.Logic.Job;
 using HarmonyLib;
 using UnityEngine;
 
-namespace AutoPilot
+namespace RouteSetter
 {
     struct StationTrack
     {
@@ -22,6 +22,11 @@ namespace AutoPilot
             if (Track.Contains("--")) return $"{ID}_{StationName}_{Yard}_{Track}";
             return $"{StationName}_{Yard}_{Track}";
         }
+        public string GetTrackName()
+        {
+            if (Track.Contains("--")) return $"{ID}_{Track}";
+            return $"{Track}";
+        }
 
         public StationTrack(string fullName)
         {
@@ -33,11 +38,11 @@ namespace AutoPilot
                 throw new FormatException($"Track ID doesn't have enough parts: {fullName}");
 
             ID = parts[0];
-            StationName = parts[1];
-            Yard = parts[2];
+            StationName = parts[2];
+            Yard = parts[1];
             Track = parts.Length > 4 ? string.Join("_", parts.Skip(3)) : parts[3];
 
-            Debug.Log($"[AutoPilot] Parsed track: ID={ID}, Station={StationName}, Yard={Yard}, Track={Track}");
+            RouteSetterDebug.Log($"[RouteSetter] Parsed track: ID={ID}, Station={StationName}, Yard={Yard}, Track={Track}");
         }
 
     }
@@ -53,46 +58,141 @@ namespace AutoPilot
                 .ToList();
         }
 
+
     }
 
     internal class DestSelector : AStateBehaviour
     {
+        internal enum SelectorMode { Station, Track }
+        private readonly SelectorMode _mode;
         private readonly List<StationTrack> _tracks;
-        private readonly int _index;
-        
-        public DestSelector(int index = 0, List<StationTrack> tracks = null)
-            : base(CreateState(index, tracks))
-        {
-            
+        private readonly List<StationTrack> _stations; // Now a list of unique StationTrack per station
+        private readonly int _stationIndex;
+        private readonly int _trackIndex;
 
-                    _tracks = tracks != null
-            ? TrackSorter.SortTracksByStation_LINQ(tracks)
-            : TrackSorter.SortTracksByStation_LINQ(LoadTracks());
-            _index = _tracks.Count > 0
-                ? Mathf.Clamp(index, 0, _tracks.Count - 1)
-                : 0;
-            Debug.Log($"[AutoPilot] DestSelector initialized at index {_index}/{_tracks.Count - 1}");
+        public DestSelector(int stationIndex = 0, int trackIndex = 0, List<StationTrack> tracks = null, SelectorMode mode = SelectorMode.Station)
+            : base(CreateState(stationIndex, trackIndex, tracks, mode))
+        {
+            _tracks = tracks != null
+                ? TrackSorter.SortTracksByStation_LINQ(tracks)
+                : TrackSorter.SortTracksByStation_LINQ(LoadTracks());
+
+            // Unique StationTrack per station (first occurrence)
+            _stations = _tracks
+                .GroupBy(t => t.StationName)
+                .Select(g => g.First())
+                .OrderBy(t => t.StationName)
+                .ToList();
+
+            _stationIndex = _stations.Count > 0 ? Mathf.Clamp(stationIndex, 0, _stations.Count - 1) : 0;
+            _trackIndex = trackIndex;
+            _mode = mode;
         }
 
-        // Static helper to build the radio state
-        private static CommsRadioState CreateState(int index, List<StationTrack> tracks)
+        private static CommsRadioState CreateState(int stationIndex, int trackIndex, List<StationTrack> tracks, SelectorMode mode)
         {
-            
-            var list = tracks ?? LoadTracksStatic();
-            int i = list.Count > 0 ? Mathf.Clamp(index, 0, list.Count - 1) : 0;
-            string content = list.Count > 0 ? list[i].GetFullNameNoID() : "No stations available";
-            var newstate = new CommsRadioState(
-            "Select destination",
-            content,
-            "Click to confirm", // actionText
-            LCDArrowState.Off,
-            LEDState.Off,
-            ButtonBehaviourType.Override
-            );
-            return newstate;
+            var sortedTracks = tracks != null
+                ? TrackSorter.SortTracksByStation_LINQ(tracks)
+                : TrackSorter.SortTracksByStation_LINQ(LoadTracksStatic());
+
+            var stations = sortedTracks
+                .GroupBy(t => t.StationName)
+                .Select(g => g.First())
+                .OrderBy(t => t.StationName)
+                .ToList();
+
+            if (mode == SelectorMode.Station)
+            {
+                if (stations.Count == 0)
+                    return new CommsRadioState(
+                        "Select station",
+                        "No stations available",
+                        "",
+                        LCDArrowState.Off,
+                        LEDState.Off,
+                        ButtonBehaviourType.Override
+                    );
+
+                var selectedStation = stations[Mathf.Clamp(stationIndex, 0, stations.Count - 1)];
+                var content = $"{selectedStation.StationName}";
+                return new CommsRadioState(
+                    "Select station",
+                    content,
+                    "Click to confirm ",
+                    LCDArrowState.Off,
+                    LEDState.Off,
+                    ButtonBehaviourType.Override
+                );
+            }
+            else // Track mode
+            {
+                if (stations.Count == 0)
+                    return new CommsRadioState("Select track", "No tracks available", "", LCDArrowState.Off, LEDState.Off, ButtonBehaviourType.Override);
+
+                var selectedStation = stations[stationIndex];
+                var stationTracks = sortedTracks.Where(t => t.StationName == selectedStation.StationName).ToList();
+                if (stationTracks.Count == 0)
+                    return new CommsRadioState("Select track", "No tracks available", "", LCDArrowState.Off, LEDState.Off, ButtonBehaviourType.Override);
+
+                var selectedTrack = stationTracks[Mathf.Clamp(trackIndex, 0, stationTracks.Count - 1)];
+                var content = $"**{selectedTrack.GetTrackName()}**";
+                return new CommsRadioState(
+                    $"Track for {selectedStation.StationName}",
+                    content,
+                    "Click to confirm track",
+                    LCDArrowState.Off,
+                    LEDState.Off,
+                    ButtonBehaviourType.Override
+                );
+            }
         }
 
-        // Load instance tracks
+        public override AStateBehaviour OnAction(CommsRadioUtility util, InputAction action)
+        {
+            if (_tracks.Count == 0 || _stations.Count == 0) return this;
+
+            if (_mode == SelectorMode.Station)
+            {
+                int nextStation = _stationIndex;
+                switch (action)
+                {
+                    case InputAction.Up:
+                        nextStation = (_stationIndex + 1) % _stations.Count;
+                        break;
+                    case InputAction.Down:
+                        nextStation = (_stationIndex - 1 + _stations.Count) % _stations.Count;
+                        break;
+                    case InputAction.Activate:
+                        // Enter track selection mode for this station
+                        return new DestSelector(nextStation, 0, _tracks, SelectorMode.Track);
+                    default:
+                        return this;
+                }
+                return new DestSelector(nextStation, 0, _tracks, SelectorMode.Station);
+            }
+            else // Track mode
+            {
+                var stationTracks = _tracks.Where(t => t.StationName == _stations[_stationIndex].StationName).ToList();
+                if (stationTracks.Count == 0) return this;
+                int nextTrack = _trackIndex;
+                switch (action)
+                {
+                    case InputAction.Up:
+                        nextTrack = (nextTrack + 1) % stationTracks.Count;
+                        break;
+                    case InputAction.Down:
+                        nextTrack = (nextTrack - 1 + stationTracks.Count) % stationTracks.Count;
+                        break;
+                    case InputAction.Activate:
+                        RouteSetterDebug.Log($"[RouteSetter] Selected: {stationTracks[_trackIndex].GetFullName()}");
+                        return new PathModeSelector(0, stationTracks[_trackIndex]);
+                    default:
+                        return this;
+                }
+                return new DestSelector(_stationIndex, nextTrack, _tracks, SelectorMode.Track);
+            }
+        }
+
         private List<StationTrack> LoadTracks()
         {
             var list = LoadTracksStatic();
@@ -100,22 +200,20 @@ namespace AutoPilot
             {
                 list.AddRange(new[]
                 {
-                    new StationTrack("000001_[SM]_[Y]_[A-01]"),
-                    new StationTrack("000002_[SM]_[Y]_[A-02]"),
-                    new StationTrack("000003_[SM]_[Y]_[A-03]")
-                });
+                new StationTrack("000001_[SM]_[Y]_[A-01]"),
+                new StationTrack("000002_[SM]_[Y]_[A-02]"),
+                new StationTrack("000003_[SM]_[Y]_[A-03]")
+            });
             }
             return list;
         }
-
-        // Static track loader for state creation
         private static List<StationTrack> LoadTracksStatic()
         {
             var list = new List<StationTrack>();
-            var graph = Switcher.pathFinder?.graph;
+            var graph = Switcher.pathFinder?.Graph;
             if (graph == null)
             {
-                Debug.LogWarning("[AutoPilot] Pathfinder graph is null");
+                RouteSetterDebug.LogWarning("[RouteSetter] Pathfinder graph is null");
                 return list;
             }
 
@@ -126,36 +224,12 @@ namespace AutoPilot
                     try { list.Add(new StationTrack(id)); }
                     catch (Exception ex)
                     {
-                        Debug.LogError($"[AutoPilot] Error parsing track {id}: {ex.Message}");
+                        Debug.LogError($"[RouteSetter] Error parsing track {id}: {ex.Message}");
                     }
                 }
             }
-            Debug.Log($"[AutoPilot] Loaded {list.Count} tracks");
+            RouteSetterDebug.Log($"[RouteSetter] Loaded {list.Count} tracks");
             return list;
-        }
-
-        public override AStateBehaviour OnAction(CommsRadioUtility util, InputAction action)
-        {
-            Debug.Log($"[AutoPilot] Action: {action}");
-            if (_tracks.Count == 0) return this;
-
-            int next = _index;
-            switch (action)
-            {
-                case InputAction.Up:
-                    next = (_index + 1) % _tracks.Count;
-                    break;
-                case InputAction.Down:
-                    next = (_index - 1 + _tracks.Count) % _tracks.Count;
-                    break;
-                case InputAction.Activate:
-                    Debug.Log($"[AutoPilot] Selected: {_tracks[_index].GetFullName()}");
-                    return new SwitchJunctionsStateBehaviour("SelctedStation:" + _tracks[_index].GetFullNameNoID(), _tracks[_index]);
-                default:
-                    return this;
-            }
-
-            return new DestSelector(next, _tracks);
         }
     }
 }

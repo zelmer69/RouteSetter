@@ -1,11 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using CommsRadioAPI;
-using DV;
-using DV.Player;
 
-namespace AutoPilot
+
+namespace RouteSetter
 {
     internal class SwitchJunctionsStateBehaviour : AStateBehaviour
     {
@@ -13,13 +12,22 @@ namespace AutoPilot
         private readonly StationTrack Destination;
         private readonly string actionText;
 
-        public SwitchJunctionsStateBehaviour(string contextText = "Finding route", StationTrack destination = default,string Actiontext = "Click to confirm")
-            : base(new CommsRadioState("Switch Junctions", contextText,Actiontext))
+
+
+        private readonly PathFindingMode _pathMode;
+
+        
+        public SwitchJunctionsStateBehaviour(
+            string contextText = "Finding route",
+            StationTrack destination = default,
+            string Actiontext = "Click to confirm",
+            PathFindingMode pathMode = PathFindingMode.Dijkstra)
+            : base(new CommsRadioState("Switch Junctions", contextText, Actiontext))
         {
             this.contextText = contextText;
             this.Destination = destination;
             this.actionText = Actiontext;
-
+            this._pathMode = pathMode;
         }
 
         public override AStateBehaviour OnAction(CommsRadioUtility utility, InputAction action)
@@ -53,31 +61,60 @@ namespace AutoPilot
                 return new SwitchJunctionsStateBehaviour(error);
 
             string startTrackId = PathFinder.GetRailTrackGraphID(playerTrack);
-            var destinationNode = Switcher.pathFinder.FindStationTrackByName(Destination.StationName,Destination.Yard,Destination.Track);
+            var destinationNode = Switcher.pathFinder.FindStationTrackByName(Destination.StationName, Destination.Yard, Destination.Track);
             error = ValidateDestinationNode(destinationNode);
             if (error != null)
                 return new SwitchJunctionsStateBehaviour(error);
 
-            string destinationTrackId = destinationNode.id;
-            var pathTrackIds = Switcher.pathFinder.FindShortestPath(startTrackId, destinationTrackId);
+            string destinationTrackId = destinationNode.Id;
+            List<string> pathTrackIds = null;
+            int uTurnCount = 0;
+
+            switch (_pathMode)
+            {
+                case PathFindingMode.Dijkstra:
+                    pathTrackIds = Switcher.pathFinder.FindShortestPath(startTrackId, destinationTrackId);
+                    break;
+                case PathFindingMode.DijkstraWithoutUTurns:
+                    var result = Switcher.pathFinder.FindShortestPathWithUTurns(startTrackId, destinationTrackId);
+                    pathTrackIds = result.path;
+                    uTurnCount = result.uTurnCount;
+                    break;
+                case PathFindingMode.BFS:
+                    pathTrackIds = Switcher.pathFinder.FindShortestPathBFS(startTrackId, destinationTrackId);
+                    break;
+            }
+
             error = ValidatePath(pathTrackIds);
             if (error != null)
-                return new SwitchJunctionsStateBehaviour(error);
+                return new SwitchJunctionsStateBehaviour(error, default, "Click to confirm", _pathMode);
 
+
+            Switcher.routeDrawer.DisplayRoute(pathTrackIds);
             var trackIndexInPath = BuildTrackIndexInPath(pathTrackIds);
             var junctionTrackIds = CollectJunctionTrackIds(pathTrackIds);
 
             var (switchesChanged, junctionsUnset, junctionResults) = SetJunctionsAlongPath(junctionTrackIds, trackIndexInPath, pathTrackIds);
+            var pathInfo = new StringBuilder();
+
+            pathInfo.AppendLine($"Pathfinding mode: {_pathMode}");
+            if (_pathMode == PathFindingMode.DijkstraWithoutUTurns)
+                pathInfo.AppendLine($"U-turns  {uTurnCount}");
+            pathInfo.AppendLine($"Path length: {pathTrackIds?.Count ?? 0}");
+            if (pathTrackIds != null && pathTrackIds.Count > 0)
+                pathInfo.AppendLine($"Path: {string.Join(" -> ", pathTrackIds)}");
 
             string statusMessage = BuildStatusMessage(switchesChanged, junctionsUnset);
-
             if (junctionResults.Length > 0)
-                Debug.Log(junctionResults.ToString());
-            Debug.Log($"[AutoPilot] {statusMessage}");
+                RouteSetterDebug.Log(junctionResults.ToString());
+            RouteSetterDebug.Log($"[RouteSetter] {statusMessage}\n{pathInfo}");
 
-            return new SwitchJunctionsStateBehaviour($"Route is set from{startTrackId} to {Destination.GetFullNameNoID()}",default, $"Happy derailing!");
+            return new SwitchJunctionsStateBehaviour(
+                $"Route:{startTrackId}->{Destination.StationName}-{Destination.Track}info:\n{pathInfo}",
+                default,
+                $"Happy derailing!"
+            );
         }
-
         private string ValidatePathFinder(Transform signalOrigin)
         {
             if (signalOrigin == null)
@@ -128,7 +165,7 @@ namespace AutoPilot
             var junctionTrackIds = new List<string>();
             foreach (var trackId in pathTrackIds)
             {
-                if (Switcher.Graph.TryGetValue(trackId, out var trackNode) && trackNode.junction != null)
+                if (Switcher.Graph.TryGetValue(trackId, out var trackNode) && trackNode.Junction != null)
                     junctionTrackIds.Add(trackId);
             }
             return junctionTrackIds;
@@ -145,10 +182,10 @@ namespace AutoPilot
 
             foreach (var junctionTrackId in junctionTrackIds)
             {
-                if (!Switcher.Graph.TryGetValue(junctionTrackId, out var trackNode) || trackNode.junction == null)
+                if (!Switcher.Graph.TryGetValue(junctionTrackId, out var trackNode) || trackNode.Junction == null)
                     continue;
 
-                var junction = trackNode.junction;
+                var junction = trackNode.Junction;
                 int pathIndex = trackIndexInPath[junctionTrackId];
                 if (pathIndex >= pathTrackIds.Count - 1)
                     continue;

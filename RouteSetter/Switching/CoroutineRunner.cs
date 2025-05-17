@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace AutoPilot
+namespace RouteSetter
 {
     internal static class CoroutineRunner
     {

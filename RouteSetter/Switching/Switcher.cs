@@ -5,22 +5,24 @@ using DV.Player;
 using CommsRadioAPI;
 using DV;
 
-namespace AutoPilot
+namespace RouteSetter
 {
     internal class Switcher
     {
         public static Dictionary<string, TrackNode> Graph;
         public Camera playerCamera;
         public static PathFinder pathFinder;
-
+        public static RouteDrawer routeDrawer;
+        public static bool RouteDisplayEnabled { get; set; } = true; // default: enabled
         public void SetupPathFindingMode()
         {
             playerCamera = PlayerManager.PlayerCamera;
             pathFinder = playerCamera.gameObject.AddComponent<PathFinder>();
+            routeDrawer = playerCamera.gameObject.AddComponent<RouteDrawer>();
             pathFinder.Generate();
-            Graph = pathFinder.graph;
-            if (pathFinder.graph == null)
-                Debug.LogError("AutoPilotMod::Switcher -> Unable to generate network");
+            Graph = pathFinder.Graph;
+            if (pathFinder.Graph == null)
+                Debug.LogError("RouteSetterMod::Switcher -> Unable to generate network");
         }
 
         internal TrainCar GetTrainCar()
@@ -39,9 +41,9 @@ namespace AutoPilot
                 CoroutineRunner.StartCoroutine(WaitForCommsRadioController());
                 return;
             }
-            CommsRadioMode mode = CommsRadioMode.Create(new InitialStateBehaviour(), new Color(0, 0, 0));
+            CommsRadioMode mode = CommsRadioMode.Create(new InitialStateBehaviour(1), new Color(0, 0, 0));
 
-            Debug.Log("Custom radio mode registered successfully.");
+            RouteSetterDebug.Log("Custom radio mode registered successfully.");
             SetupPathFindingMode();
         }
 
