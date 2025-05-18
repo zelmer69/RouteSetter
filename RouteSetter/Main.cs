@@ -18,7 +18,7 @@ namespace RouteSetter
         public static RouteSetterSettings Settings;
 
         public static void Load(UnityModManager.ModEntry modEntry)
-        { 
+        {
 
             Settings = UnityModManagerNet.UnityModManager.ModSettings.Load<RouteSetterSettings>(modEntry);
 
@@ -40,3 +40,15 @@ namespace RouteSetter
             }
             return true;
         }
+
+        private static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            Settings.Draw(modEntry);
+        }
+
+        private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            Settings.Save(modEntry);
+        }
+    }
+}

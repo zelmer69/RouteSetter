@@ -34,45 +34,54 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\UnityModManager\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\UnityModManager\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BezierCurves, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\BezierCurves.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\BezierCurves.dll</HintPath>
     </Reference>
     <Reference Include="CommsRadioAPI">
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\Mods\CommsRadioAPI\CommsRadioAPI.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\Mods\CommsRadioAPI\CommsRadioAPI.dll</HintPath>
     </Reference>
     <Reference Include="DV.Common, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.Common.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.Common.dll</HintPath>
     </Reference>
     <Reference Include="DV.Inventory, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.Inventory.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.Inventory.dll</HintPath>
     </Reference>
     <Reference Include="DV.OriginShiftInfo, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.OriginShiftInfo.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.OriginShiftInfo.dll</HintPath>
     </Reference>
     <Reference Include="DV.PointSet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.PointSet.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.PointSet.dll</HintPath>
     </Reference>
     <Reference Include="DV.RailTrack, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.RailTrack.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.RailTrack.dll</HintPath>
+    </Reference>
+    <Reference Include="DV.SignPlacer">
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.SignPlacer.dll</HintPath>
+    </Reference>
+    <Reference Include="DV.SignPlacer.Utils">
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.SignPlacer.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="DV.Simulation">
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.Simulation.dll</HintPath>
     </Reference>
     <Reference Include="DV.ThingTypes, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.ThingTypes.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.ThingTypes.dll</HintPath>
     </Reference>
     <Reference Include="net.smkd.vector3d, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\net.smkd.vector3d.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\net.smkd.vector3d.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -84,13 +93,13 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\Unity\Unity 2019.4.40f1\Editor\Data\PlaybackEngines\windowsstandalonesupport\Variations\mono\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityModManager">
-      <HintPath>..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

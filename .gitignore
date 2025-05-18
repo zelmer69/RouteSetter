@@ -9,3 +9,6 @@
 /RouteSetter/.vs
 /.vs
 /.vs
+RouteSetter/obj/Debug/RouteSetter.csproj.AssemblyReference.cache
+*.cache
+/RouteSetter/bin

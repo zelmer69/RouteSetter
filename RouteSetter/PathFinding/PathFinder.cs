@@ -791,7 +791,7 @@ namespace RouteSetter
 
             // Apply occupied track penalty if applicable
             if (toNode.Track.LogicTrack().OccupiedLength != 0)
-                cost *= toNode.Track.LogicTrack().OccupiedLength;
+                cost *= toNode.Track.LogicTrack().OccupiedLength*100;
 
             return (float)cost;
         }
