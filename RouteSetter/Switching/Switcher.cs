@@ -41,7 +41,7 @@ namespace RouteSetter
                 CoroutineRunner.StartCoroutine(WaitForCommsRadioController());
                 return;
             }
-            CommsRadioMode mode = CommsRadioMode.Create(new InitialStateBehaviour(1), new Color(0, 0, 0));
+            CommsRadioMode mode = CommsRadioMode.Create(new RouteSetterMainState(), new Color(0, 0, 0));
 
             RouteSetterDebug.Log("Custom radio mode registered successfully.");
             SetupPathFindingMode();

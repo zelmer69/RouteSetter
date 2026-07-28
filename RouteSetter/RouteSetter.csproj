@@ -104,6 +104,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PathFinding\PathModeSelector.cs" />
+    <Compile Include="Radio\RadioState_ListBase.cs" />
+    <Compile Include="Radio\RouteSetterMainState.cs" />
+    <Compile Include="Radio\RouteSetterState.cs" />
     <Compile Include="RouteDisplayToggleState.cs" />
     <Compile Include="RouteDrawer.cs" />
     <Compile Include="RouteSetterSettings.cs" />

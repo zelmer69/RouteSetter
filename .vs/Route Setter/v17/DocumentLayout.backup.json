@@ -3,6 +3,42 @@
   "WorkspaceRootPath": "E:\\SourceFiles\\RouteSetter\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\radio\\routesetterstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\radio\\routesetterstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\radio\\radiostate_listbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\radio\\radiostate_listbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\radio\\routesettermainstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\radio\\routesettermainstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\switching\\initialstatebehaviour.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\switching\\initialstatebehaviour.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\routedisplaytogglestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\routedisplaytogglestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\switching\\switcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\switching\\switcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\switching\\coroutinerunner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\switching\\coroutinerunner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\routedrawer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\routedrawer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\pathfinding\\pathfinder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\pathfinding\\pathfinder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -13,18 +49,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\routesettersettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\routesettersettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\routedrawer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\routedrawer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\routedisplaytogglestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\routedisplaytogglestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|e:\\sourcefiles\\routesetter\\routesetter\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5F5DCFE8-B933-4B7A-99B4-45428CB387E5}|RouteSetter\\RouteSetter.csproj|solutionrelative:routesetter\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,17 +58,95 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RadioState_ListBase.cs",
+              "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Radio\\RadioState_ListBase.cs",
+              "RelativeDocumentMoniker": "RouteSetter\\Radio\\RadioState_ListBase.cs",
+              "ToolTip": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Radio\\RadioState_ListBase.cs",
+              "RelativeToolTip": "RouteSetter\\Radio\\RadioState_ListBase.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAgwCgAAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-28T17:05:54.334Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Switcher.cs",
+              "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Switching\\Switcher.cs",
+              "RelativeDocumentMoniker": "RouteSetter\\Switching\\Switcher.cs",
+              "ToolTip": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Switching\\Switcher.cs",
+              "RelativeToolTip": "RouteSetter\\Switching\\Switcher.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-28T15:57:36.342Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "RouteSetterState.cs",
+              "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Radio\\RouteSetterState.cs",
+              "RelativeDocumentMoniker": "RouteSetter\\Radio\\RouteSetterState.cs",
+              "ToolTip": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Radio\\RouteSetterState.cs",
+              "RelativeToolTip": "RouteSetter\\Radio\\RouteSetterState.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAsAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-28T15:54:38.879Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RouteSetterMainState.cs",
+              "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Radio\\RouteSetterMainState.cs",
+              "RelativeDocumentMoniker": "RouteSetter\\Radio\\RouteSetterMainState.cs",
+              "ToolTip": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Radio\\RouteSetterMainState.cs",
+              "RelativeToolTip": "RouteSetter\\Radio\\RouteSetterMainState.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-28T15:49:40.491Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "InitialStateBehaviour.cs",
+              "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Switching\\InitialStateBehaviour.cs",
+              "RelativeDocumentMoniker": "RouteSetter\\Switching\\InitialStateBehaviour.cs",
+              "ToolTip": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Switching\\InitialStateBehaviour.cs",
+              "RelativeToolTip": "RouteSetter\\Switching\\InitialStateBehaviour.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-28T14:36:34.348Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CoroutineRunner.cs",
+              "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Switching\\CoroutineRunner.cs",
+              "RelativeDocumentMoniker": "RouteSetter\\Switching\\CoroutineRunner.cs",
+              "ToolTip": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Switching\\CoroutineRunner.cs",
+              "RelativeToolTip": "RouteSetter\\Switching\\CoroutineRunner.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-28T14:36:27.319Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "PathFinder.cs",
               "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\PathFinding\\PathFinder.cs",
               "RelativeDocumentMoniker": "RouteSetter\\PathFinding\\PathFinder.cs",
               "ToolTip": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\PathFinding\\PathFinder.cs",
               "RelativeToolTip": "RouteSetter\\PathFinding\\PathFinder.cs",
-              "ViewState": "AgIAAAcDAAAAAAAAAAAswB0DAAAkAAAAAAAAAA==",
+              "ViewState": "AgIAAK0AAAAAAAAAAAAswMoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-28T11:20:43.325Z",
               "EditorCaption": ""
@@ -57,14 +159,14 @@
               "RelativeDocumentMoniker": "RouteSetter\\RouteDisplayToggleState.cs",
               "ToolTip": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\RouteDisplayToggleState.cs",
               "RelativeToolTip": "RouteSetter\\RouteDisplayToggleState.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-28T11:05:51.71Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 10,
               "Title": "Stations.cs",
               "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Stations.cs",
               "RelativeDocumentMoniker": "RouteSetter\\Stations.cs",
@@ -77,7 +179,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 11,
               "Title": "RouteSetterSettings.cs",
               "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\RouteSetterSettings.cs",
               "RelativeDocumentMoniker": "RouteSetter\\RouteSetterSettings.cs",
@@ -90,7 +192,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
               "Title": "RouteDrawer.cs",
               "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\RouteDrawer.cs",
               "RelativeDocumentMoniker": "RouteSetter\\RouteDrawer.cs",
@@ -103,13 +205,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Main.cs",
               "DocumentMoniker": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Main.cs",
               "RelativeDocumentMoniker": "RouteSetter\\Main.cs",
               "ToolTip": "E:\\SourceFiles\\RouteSetter\\RouteSetter\\Main.cs",
               "RelativeToolTip": "RouteSetter\\Main.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAB0AAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-28T11:03:06.318Z",
               "EditorCaption": ""

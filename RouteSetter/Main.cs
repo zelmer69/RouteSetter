@@ -30,7 +30,6 @@ namespace RouteSetter
             switcher = new Switcher();
 
         }
-
         private static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
         {
             Enabled = value;
