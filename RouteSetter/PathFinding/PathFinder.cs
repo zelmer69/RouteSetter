@@ -224,6 +224,8 @@ namespace RouteSetter
                 if (currentNode == goal)
                     break;
 
+   
+
                 foreach (var neighbor in Graph[currentNode].Neighbors)
                 {
                     if (!Graph.ContainsKey(neighbor))
@@ -787,8 +789,15 @@ namespace RouteSetter
                 return float.MaxValue;
 
             // Base cost is the track length
-            double cost = toNode.Track.LogicTrack().length;
+                double cost = toNode.Track.LogicTrack().length;
 
+            if (fromId.Contains("[Y]"))// add cost to going thru yard. 
+            {
+                if (fromId.EndsWith("O]") || fromId.EndsWith("I]") || fromId.EndsWith("L]") || fromId.EndsWith("S]"))
+                {
+                    cost = cost * 2;
+                }
+            }
             // Apply occupied track penalty if applicable
             if (toNode.Track.LogicTrack().OccupiedLength != 0)
                 cost *= toNode.Track.LogicTrack().OccupiedLength*100;
