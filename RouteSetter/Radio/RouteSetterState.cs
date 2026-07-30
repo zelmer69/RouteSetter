@@ -19,7 +19,7 @@ namespace RouteSetter
         {
             switch (selectedIndex)
             {
-                case 0: return new DestSelector(0);
+                case 0: return new RouteSettings();
                 case 1: return new RouteDisplayMenuState();
                 case 2: return new RouteSetterMainState();
                 default: throw new System.ArgumentException();

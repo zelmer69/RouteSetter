@@ -30,7 +30,7 @@ namespace RouteSetter.Radio
             string[] result = new string[options.Length];
             for (int i = 0; i < options.Length; i++)
             {
-                result[i] = (i == selectedItem) ? "*" + options[i] + "*" : options[i];
+                result[i] = (i == selectedItem) ? "|" + options[i] + "" : options[i];
             }
             return result;
         }

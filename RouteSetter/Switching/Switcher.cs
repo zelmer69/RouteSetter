@@ -4,9 +4,16 @@ using UnityEngine;
 using DV.Player;
 using CommsRadioAPI;
 using DV;
+using DV.Logic.Job;
 
 namespace RouteSetter
 {
+    enum StartTrackType
+    {
+        LastLoco =0,
+        SelectedTrack=1
+    }
+
     internal class Switcher
     {
         public static Dictionary<string, TrackNode> Graph;
@@ -14,6 +21,10 @@ namespace RouteSetter
         public static PathFinder pathFinder;
         public static RouteDrawer routeDrawer;
         public static bool RouteDisplayEnabled { get; set; } = true; // default: enabled
+        public static StationTrack SavedStartTrack { get; set; } = new StationTrack();
+        public static StationTrack SavedStartTrack { get; set; } = new StationTrack();
+
+        public static StartTrackType StartTrackSetting { get; set; } = StartTrackType.LastLoco; 
         public void SetupPathFindingMode()
         {
             playerCamera = PlayerManager.PlayerCamera;

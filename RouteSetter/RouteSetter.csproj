@@ -67,10 +67,10 @@
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.RailTrack.dll</HintPath>
     </Reference>
     <Reference Include="DV.SignPlacer">
-      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.SignPlacer.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.SignPlacer.dll</HintPath>
     </Reference>
     <Reference Include="DV.SignPlacer.Utils">
-      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.SignPlacer.Utils.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.SignPlacer.Utils.dll</HintPath>
     </Reference>
     <Reference Include="DV.Simulation">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Derail Valley\DerailValley_Data\Managed\DV.Simulation.dll</HintPath>
@@ -107,6 +107,9 @@
     <Compile Include="Radio\RadioState_ListBase.cs" />
     <Compile Include="Radio\RouteSetterMainState.cs" />
     <Compile Include="Radio\RouteSetterState.cs" />
+    <Compile Include="Radio\SelectStart.cs" />
+    <Compile Include="Radio\RouteSettings.cs" />
+    <Compile Include="Radio\TrackSelector.cs" />
     <Compile Include="RouteDisplayToggleState.cs" />
     <Compile Include="RouteDrawer.cs" />
     <Compile Include="RouteSetterSettings.cs" />
@@ -121,4 +124,7 @@
     <Compile Include="Switching\SwitchJunctionsStateBehaviour.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Derail Valley\Mods\RouteSetter" /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

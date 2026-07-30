@@ -2,6 +2,7 @@
 using System.Text;
 using UnityEngine;
 using CommsRadioAPI;
+using System.Linq.Expressions;
 
 
 namespace RouteSetter
@@ -20,7 +21,7 @@ namespace RouteSetter
         public SwitchJunctionsStateBehaviour(
             string contextText = "Finding route",
             StationTrack destination = default,
-            string Actiontext = "Click to confirm",
+            string Actiontext = "Click to start",
             PathFindingMode pathMode = PathFindingMode.Dijkstra)
             : base(new CommsRadioState("Switch Junctions", contextText, Actiontext))
         {
@@ -97,20 +98,26 @@ namespace RouteSetter
             var (switchesChanged, junctionsUnset, junctionResults) = SetJunctionsAlongPath(junctionTrackIds, trackIndexInPath, pathTrackIds);
             var pathInfo = new StringBuilder();
 
-            pathInfo.AppendLine($"Pathfinding mode: {_pathMode}");
-            if (_pathMode == PathFindingMode.DijkstraWithoutUTurns)
-                pathInfo.AppendLine($"U-turns  {uTurnCount}");
-            pathInfo.AppendLine($"Path length: {pathTrackIds?.Count ?? 0}");
-            if (pathTrackIds != null && pathTrackIds.Count > 0)
-                pathInfo.AppendLine($"Path: {string.Join(" -> ", pathTrackIds)}");
-
+            pathInfo.AppendLine($"Stations:");
+            
+            foreach (string ID in pathTrackIds)
+            {
+                //StationTrack stationTrack = new StationTrack(ID);
+                //if (!string.IsNullOrEmpty(stationTrack.StationName))
+                //{
+                  
+                   // pathInfo.AppendLine(stationTrack.StationName+", "); 
+                    
+                //}
+            }
+            
             string statusMessage = BuildStatusMessage(switchesChanged, junctionsUnset);
             if (junctionResults.Length > 0)
                 RouteSetterDebug.Log(junctionResults.ToString());
             RouteSetterDebug.Log($"[RouteSetter] {statusMessage}\n{pathInfo}");
 
             return new SwitchJunctionsStateBehaviour(
-                $"Route:{startTrackId}->{Destination.StationName}-{Destination.Track}info:\n{pathInfo}",
+                $"Route:{startTrackId}->{Destination.StationName}-{Destination.Track}\n via:{pathInfo}",
                 default,
                 $"Happy derailing!"
             );
