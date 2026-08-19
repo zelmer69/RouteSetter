@@ -12,30 +12,30 @@ namespace RouteSetter.Radio
     internal class SelectStart : ARadioState_ListBase
     {
         private static readonly string[] options = { "Current Loco", "Select track", "Back" };
-        private StationTrack selectedtrack;
+        private TrackID selectedtrack;
 
-        public SelectStart(int selectedIndex = 0, StationTrack startTrack = new StationTrack())
+        public SelectStart(int selectedIndex = 0, TrackID startTrack = null)
             : base("Select start", injectNames(options, ResolveTrack(startTrack)), selectedIndex)
         {
             var resolved = ResolveTrack(startTrack);
             selectedtrack = resolved;
-
-            if (!string.IsNullOrEmpty(resolved.StationName))
+            if (resolved != null && !string.IsNullOrEmpty(resolved.yardId))
             {
-                Debug.Log("selected track:" + resolved.GetFullName());
+                Debug.Log("selected track:" + resolved.FullID);
                 Switcher.SavedStartTrack = resolved;
             }
         }
 
 
-        private static StationTrack ResolveTrack(StationTrack passedTrack) =>
-            !string.IsNullOrEmpty(passedTrack.StationName) ? passedTrack : Switcher.SavedStartTrack;
+        private static TrackID ResolveTrack(TrackID passedTrack) =>
+            passedTrack != null && !string.IsNullOrEmpty(passedTrack.yardId) ? passedTrack : Switcher.SavedStartTrack;
 
-        static string[] injectNames(string[] source, StationTrack track)
+        
+        static string[] injectNames(string[] source, TrackID track)
         {
             string[] result = (string[])source.Clone();
             result[0] = result[0] + ":" + (PlayerManager.LastLoco ? PlayerManager.LastLoco.FrontBogie.track.ToString() : "No loco");
-            result[1] = result[1] + ":" + (!string.IsNullOrEmpty(track.StationName) ? track.StationName + track.Track : "none");
+            result[1] = result[1] + ":" + (track != null && !string.IsNullOrEmpty(track.yardId) ? track.yardId + track.yardId : "none");
             return result;
         }
 

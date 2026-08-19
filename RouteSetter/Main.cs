@@ -8,6 +8,7 @@ using UnityModManagerNet;
 
 using HarmonyLib;
 using UnityEngine;
+using RouteSetter.ETA;
 
 namespace RouteSetter
 {
@@ -16,7 +17,7 @@ namespace RouteSetter
         public static bool Enabled;
         private static Switcher switcher;
         public static RouteSetterSettings Settings;
-
+        
         public static void Load(UnityModManager.ModEntry modEntry)
         {
 
@@ -28,7 +29,9 @@ namespace RouteSetter
 
             UnityModManager.Logger.Log("Route setter setup successfully.");
             switcher = new Switcher();
-
+            var go = new GameObject("BrakingDistanceEstimatorHost");
+            UnityEngine.Object.DontDestroyOnLoad(go);
+            go.AddComponent<BrakingDistanceEstimator>();
         }
         private static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
         {
@@ -47,6 +50,7 @@ namespace RouteSetter
 
         private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
         {
+            
             Settings.Save(modEntry);
         }
     }

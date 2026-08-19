@@ -198,13 +198,11 @@ E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\UnityEngine.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\UnityModManager.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\DV.Utils.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\VRTK.dll
-E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\UnityEngine.UI.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\Newtonsoft.Json.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\UnityEngine.AnimationModule.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\UnityEngine.ParticleSystemModule.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\UnityEngine.AudioModule.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\Unity.Postprocessing.Runtime.dll
-E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\UnityEngine.PhysicsModule.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\DV.NAudio.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\UnityEngine.TerrainModule.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\WorldStreamer.dll
@@ -244,7 +242,6 @@ E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\I2.Localization.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\sc.posteffects.runtime.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\Amplify.Occlusion.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\DV.DistantTerrain.dll
-E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\DV.BrakeSystem.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\VerletRope.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\Unity.Mathematics.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\CommandTerminal.dll
@@ -352,3 +349,6 @@ E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\Nvidia.GeForceNOW.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\Unity.SharpZipLib.dll
 E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\UnityModManager.xml
 E:\SourceFiles\RouteSetter\RouteSetter\obj\Debug\RouteSet.CBDFF1B9.Up2Date
+E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\DV.SignPlacer.dll
+E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\DV.SignPlacer.Utils.dll
+E:\SourceFiles\RouteSetter\RouteSetter\bin\Debug\Pathfinding.dll

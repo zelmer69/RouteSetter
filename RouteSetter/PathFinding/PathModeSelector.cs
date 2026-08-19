@@ -1,5 +1,6 @@
 using CommsRadioAPI;
 using DV;
+using DV.Logic.Job;
 using System;
 using UnityEngine;
 
@@ -9,13 +10,13 @@ namespace RouteSetter
     {
         private static readonly PathFindingMode[] Modes = (PathFindingMode[])Enum.GetValues(typeof(PathFindingMode));
         private readonly int _index;
-        private readonly StationTrack _destination;
+
 
         public PathModeSelector(int index = 0, StationTrack destination = default)
             : base(CreateState(index))
         {
             _index = Mathf.Clamp(index, 0, Modes.Length - 1);
-            _destination = destination;
+
         }
 
         private static CommsRadioState CreateState(int index)
@@ -44,11 +45,11 @@ namespace RouteSetter
                     next = (_index - 1 + Modes.Length) % Modes.Length;
                     break;
                 case InputAction.Activate:
-                    return new SwitchJunctionsStateBehaviour("Finding route", _destination, "Click to confirm", Modes[_index]);
+                    return null;
                 default:
                     return this;
             }
-            return new PathModeSelector(next, _destination);
+            return new PathModeSelector(next, default);
         }
     }
 

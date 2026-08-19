@@ -4,51 +4,82 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using RouteSetter;
 using System.Threading.Tasks;
 using UnityEngine;
 using DV;
+
 namespace RouteSetter.Radio
 {
-   
-    
+    static class TrackIDParser
+    {
+        // Matches TrackID.RailTrackGameObjectID format:
+        // [Y]_[{yardId}]_[{subYardId}-{orderNumber}-{trackType}]
+        private static readonly Regex Pattern = new Regex(
+            @"\[Y\]_\[(?<yard>[^\]]+)\]_\[(?<sub>[^-\]]*)-(?<order>[^-\]]+)-(?<type>[^-\]]+)\]",
+            RegexOptions.Compiled);
+
+        public static bool TryParse(string raw, out TrackID trackId)
+        {
+            trackId = null;
+            if (string.IsNullOrEmpty(raw)) return false;
+
+            var m = Pattern.Match(raw);
+            if (!m.Success) return false;
+
+            try
+            {
+                trackId = new TrackID(
+                    m.Groups["yard"].Value,
+                    m.Groups["sub"].Value,
+                    m.Groups["order"].Value,
+                    m.Groups["type"].Value
+                );
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[RouteSetter] Error constructing TrackID from '{raw}': {ex.Message}");
+                return false;
+            }
+        }
+    }
+
     static class TrackSorter
     {
-
-        public static List<StationTrack> SortTracksByStation_LINQ(List<StationTrack> allTracks)
+        public static List<TrackID> SortTracksByStation_LINQ(List<TrackID> allTracks)
         {
             return allTracks
-                .OrderBy(t => t.StationName)
-                .ThenBy(t => t.Yard)
-                .ThenBy(t => t.Track)
+                .OrderBy(t => t.yardId)
+                .ThenBy(t => t.TrackPartOnly)
                 .ToList();
         }
-
-
     }
+
     internal class TrackSelector : AStateBehaviour
     {
         internal enum SelectorMode { Station, Track }
         private readonly SelectorMode _mode;
-        private readonly List<StationTrack> _tracks;
-        private readonly List<StationTrack> _stations; // Now a list of unique StationTrack per station
+        private readonly List<TrackID> _tracks;
+        private readonly List<TrackID> _stations; // Unique TrackID per station (yardId)
         private readonly int _stationIndex;
         private readonly int _trackIndex;
-        private readonly Action<StationTrack> onRouteSelected;
+        private readonly Action<TrackID> onRouteSelected;
         private readonly Func<AStateBehaviour> parent; // where to go after reporting the result
 
-        public TrackSelector(Action<StationTrack> onRouteSelected, Func<AStateBehaviour> parent, int stationIndex = 0, int trackIndex = 0, List<StationTrack> tracks = null, SelectorMode mode = SelectorMode.Station)
+        public TrackSelector(Action<TrackID> onRouteSelected, Func<AStateBehaviour> parent, int stationIndex = 0, int trackIndex = 0, List<TrackID> tracks = null, SelectorMode mode = SelectorMode.Station)
             : base(CreateState(stationIndex, trackIndex, tracks, mode))
         {
             _tracks = tracks != null
                 ? TrackSorter.SortTracksByStation_LINQ(tracks)
                 : TrackSorter.SortTracksByStation_LINQ(LoadTracks());
 
-            // Unique StationTrack per station (first occurrence)
+            // Unique TrackID per station (first occurrence)
             _stations = _tracks
-                .GroupBy(t => t.StationName)
+                .GroupBy(t => t.yardId)
                 .Select(g => g.First())
-                .OrderBy(t => t.StationName)
+                .OrderBy(t => t.yardId)
                 .ToList();
 
             _stationIndex = _stations.Count > 0 ? Mathf.Clamp(stationIndex, 0, _stations.Count - 1) : 0;
@@ -58,16 +89,16 @@ namespace RouteSetter.Radio
             this.parent = parent;
         }
 
-        private static CommsRadioState CreateState(int stationIndex, int trackIndex, List<StationTrack> tracks, SelectorMode mode)
+        private static CommsRadioState CreateState(int stationIndex, int trackIndex, List<TrackID> tracks, SelectorMode mode)
         {
             var sortedTracks = tracks != null
                 ? TrackSorter.SortTracksByStation_LINQ(tracks)
                 : TrackSorter.SortTracksByStation_LINQ(LoadTracksStatic());
 
             var stations = sortedTracks
-                .GroupBy(t => t.StationName)
+                .GroupBy(t => t.yardId)
                 .Select(g => g.First())
-                .OrderBy(t => t.StationName)
+                .OrderBy(t => t.yardId)
                 .ToList();
 
             if (mode == SelectorMode.Station)
@@ -83,7 +114,7 @@ namespace RouteSetter.Radio
                     );
 
                 var selectedStation = stations[Mathf.Clamp(stationIndex, 0, stations.Count - 1)];
-                var content = $"{selectedStation.StationName}";
+                var content = $"{selectedStation.yardId}";
                 return new CommsRadioState(
                     "Select station",
                     content,
@@ -99,14 +130,14 @@ namespace RouteSetter.Radio
                     return new CommsRadioState("Select track", "No tracks available", "", LCDArrowState.Off, LEDState.Off, ButtonBehaviourType.Override);
 
                 var selectedStation = stations[stationIndex];
-                var stationTracks = sortedTracks.Where(t => t.StationName == selectedStation.StationName).ToList();
+                var stationTracks = sortedTracks.Where(t => t.yardId == selectedStation.yardId).ToList();
                 if (stationTracks.Count == 0)
                     return new CommsRadioState("Select track", "No tracks available", "", LCDArrowState.Off, LEDState.Off, ButtonBehaviourType.Override);
 
                 var selectedTrack = stationTracks[Mathf.Clamp(trackIndex, 0, stationTracks.Count - 1)];
-                var content = $"**{selectedTrack.GetTrackName()}**";
+                var content = $"**{selectedTrack.SignIDTrackPart}**";
                 return new CommsRadioState(
-                    $"Track for {selectedStation.StationName}",
+                    $"Track for {selectedStation.yardId}",
                     content,
                     "Click to confirm track",
                     LCDArrowState.Off,
@@ -133,7 +164,7 @@ namespace RouteSetter.Radio
                         break;
                     case InputAction.Activate:
                         // Enter track selection mode for this station
-                        return new TrackSelector(onRouteSelected,parent, nextStation, 0, _tracks, SelectorMode.Track);
+                        return new TrackSelector(onRouteSelected, parent, nextStation, 0, _tracks, SelectorMode.Track);
                     default:
                         return this;
                 }
@@ -141,7 +172,7 @@ namespace RouteSetter.Radio
             }
             else // Track mode
             {
-                var stationTracks = _tracks.Where(t => t.StationName == _stations[_stationIndex].StationName).ToList();
+                var stationTracks = _tracks.Where(t => t.yardId == _stations[_stationIndex].yardId).ToList();
                 if (stationTracks.Count == 0) return this;
                 int nextTrack = _trackIndex;
                 switch (action)
@@ -153,7 +184,7 @@ namespace RouteSetter.Radio
                         nextTrack = (nextTrack - 1 + stationTracks.Count) % stationTracks.Count;
                         break;
                     case InputAction.Activate:
-                        RouteSetterDebug.Log($"[RouteSetter] Selected: {stationTracks[_trackIndex].GetFullName()}");
+                        RouteSetterDebug.Log($"[RouteSetter] Selected: {stationTracks[_trackIndex].FullID}");
                         onRouteSelected(stationTracks[_trackIndex]);
                         return parent();
                     default:
@@ -163,23 +194,24 @@ namespace RouteSetter.Radio
             }
         }
 
-        private List<StationTrack> LoadTracks()
+        private List<TrackID> LoadTracks()
         {
             var list = LoadTracksStatic();
             if (list.Count == 0)
             {
                 list.AddRange(new[]
                 {
-                new StationTrack("000001_[SM]_[Y]_[A-01]"),
-                new StationTrack("000002_[SM]_[Y]_[A-02]"),
-                new StationTrack("000003_[SM]_[Y]_[A-03]")
-            });
+                    new TrackID("SM", "A", "01", "Y"),
+                    new TrackID("SM", "A", "02", "Y"),
+                    new TrackID("SM", "A", "03", "Y")
+                });
             }
             return list;
         }
-        private static List<StationTrack> LoadTracksStatic()
+
+        private static List<TrackID> LoadTracksStatic()
         {
-            var list = new List<StationTrack>();
+            var list = new List<TrackID>();
             var graph = Switcher.pathFinder?.Graph;
             if (graph == null)
             {
@@ -191,10 +223,13 @@ namespace RouteSetter.Radio
             {
                 if (!string.IsNullOrEmpty(id) && id.Contains("]_"))
                 {
-                    try { list.Add(new StationTrack(id)); }
-                    catch (Exception ex)
+                    if (TrackIDParser.TryParse(id, out var trackId))
                     {
-                        Debug.LogError($"[RouteSetter] Error parsing track {id}: {ex.Message}");
+                        list.Add(trackId);
+                    }
+                    else
+                    {
+                        Debug.LogError($"[RouteSetter] Error parsing track {id}: no match for TrackID format");
                     }
                 }
             }
@@ -203,5 +238,3 @@ namespace RouteSetter.Radio
         }
     }
 }
-
-

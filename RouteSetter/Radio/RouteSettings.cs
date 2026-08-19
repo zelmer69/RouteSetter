@@ -1,4 +1,5 @@
 ﻿using CommsRadioAPI;
+using DV.Logic.Job;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,22 @@ namespace RouteSetter.Radio
     internal class RouteSettings : ARadioState_ListBase
     {
         private static readonly string[] options = { "Start", "End","confrim", "Back" };
-        private StationTrack selectedtrack;
+        private TrackID selectedtrack;
 
-        static string[] UpdateOptions(string[] toUpdate, StationTrack track)
+        private static TrackID ResolveEndTrack(TrackID passedTrack) =>
+            passedTrack != null && !string.IsNullOrEmpty(passedTrack.yardId)
+                ? passedTrack
+                : Switcher.SavedEndTrack; // this can still be null!
+
+        public RouteSettings(int selectedIndex = 0, TrackID selected = null)
+            : base("Select route", UpdateOptions(options, ResolveEndTrack(selected)), selectedIndex)
+        {
+            this.selectedtrack = ResolveEndTrack(selected);
+            if (this.selectedtrack != null && !string.IsNullOrEmpty(this.selectedtrack.yardId))
+                Switcher.SavedEndTrack = this.selectedtrack;
+        }
+
+        static string[] UpdateOptions(string[] toUpdate, TrackID track)
         {
             string[] updated = new string[toUpdate.Length];
             switch (Switcher.StartTrackSetting)
@@ -21,25 +35,15 @@ namespace RouteSetter.Radio
                     updated[0] = toUpdate[0] + ": from Loco";
                     break;
                 case StartTrackType.SelectedTrack:
-                    updated[0] = toUpdate[0] + ":" + Switcher.SavedStartTrack.StationName;
+                    // Switcher.SavedStartTrack could also be null — guard here too
+                    updated[0] = toUpdate[0] + ":" + (Switcher.SavedStartTrack?.yardId ?? "none");
                     break;
             }
             updated[1] = toUpdate[1] + ":" +
-                (!string.IsNullOrEmpty(track.StationName) ? track.StationName : "none");
+                (track != null && !string.IsNullOrEmpty(track.yardId) ? track.yardId : "none");
             updated[2] = toUpdate[2];
             updated[3] = toUpdate[3];
             return updated;
-        }
-
-        private static StationTrack ResolveEndTrack(StationTrack passedTrack) =>
-            !string.IsNullOrEmpty(passedTrack.StationName) ? passedTrack : Switcher.SavedEndTrack;
-
-        public RouteSettings(int selectedIndex = 0, StationTrack selected = new StationTrack())
-            : base("Select route", UpdateOptions(options, ResolveEndTrack(selected)), selectedIndex)
-        {
-            this.selectedtrack = ResolveEndTrack(selected);
-            if (!string.IsNullOrEmpty(this.selectedtrack.StationName))
-                Switcher.SavedEndTrack = this.selectedtrack; // if you want it persisted, mirroring SavedStartTrack
         }
 
         protected override ARadioState_ListBase CreateState(int selectedIndex) =>

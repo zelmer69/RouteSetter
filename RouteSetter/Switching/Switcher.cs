@@ -21,9 +21,8 @@ namespace RouteSetter
         public static PathFinder pathFinder;
         public static RouteDrawer routeDrawer;
         public static bool RouteDisplayEnabled { get; set; } = true; // default: enabled
-        public static StationTrack SavedStartTrack { get; set; } = new StationTrack();
-        public static StationTrack SavedStartTrack { get; set; } = new StationTrack();
-
+        public static TrackID SavedStartTrack { get; set; } = new TrackID("", "", "", "");
+        public static TrackID SavedEndTrack { get; set; } = new TrackID("", "", "", "");
         public static StartTrackType StartTrackSetting { get; set; } = StartTrackType.LastLoco; 
         public void SetupPathFindingMode()
         {

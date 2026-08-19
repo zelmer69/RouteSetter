@@ -1,260 +1,188 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using CommsRadioAPI;
+using DV.Logic.Job;
+using Pathfinding;
+using Pathfinding.Graph;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
-using CommsRadioAPI;
-using System.Linq.Expressions;
-
 
 namespace RouteSetter
 {
+
     internal class SwitchJunctionsStateBehaviour : AStateBehaviour
     {
-        private readonly string contextText;
-        private readonly StationTrack Destination;
-        private readonly string actionText;
+        private static bool TryFindNodeByTrackID(
+        Dictionary<TrackID, RailNode> graph,
+        TrackID target,
+        out RailNode node,
+        out TrackID matchedKey)
+            {
+            node = null;
+            matchedKey = null;
+
+            if (target == null)
+                return false;
+
+            foreach (var kvp in graph)
+            {
+                if (kvp.Key == null)
+                    continue;
+
+                if (string.Equals(kvp.Key.FullID, target.FullID, StringComparison.Ordinal))
+                {
+                    node = kvp.Value;
+                    matchedKey = kvp.Key;
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
 
-
-        private readonly PathFindingMode _pathMode;
-
-        
         public SwitchJunctionsStateBehaviour(
             string contextText = "Finding route",
-            StationTrack destination = default,
-            string Actiontext = "Click to start",
-            PathFindingMode pathMode = PathFindingMode.Dijkstra)
-            : base(new CommsRadioState("Switch Junctions", contextText, Actiontext))
+            TrackID destination = null,
+            string actionText = "Click to start")
+            : base(new CommsRadioState("Switch Junctions", contextText, actionText))
         {
-            this.contextText = contextText;
-            this.Destination = destination;
-            this.actionText = Actiontext;
-            this._pathMode = pathMode;
+            Debug.Log($"[RouteSetter][SwitchJunctions] Constructed. contextText='{contextText}', " +
+                $"destination={(destination == null ? "null" : destination.FullID)}, actionText='{actionText}'");
         }
 
         public override AStateBehaviour OnAction(CommsRadioUtility utility, InputAction action)
         {
-            
+            Debug.Log($"[RouteSetter][SwitchJunctions] OnAction called. action={action}");
+
             switch (action)
             {
                 case InputAction.Down:
+                    Debug.Log("[RouteSetter][SwitchJunctions] Down pressed, returning InitialStateBehaviour");
                     return new InitialStateBehaviour();
+
                 case InputAction.Activate:
-                    return SwitchJunctionsAlongPath(utility.SignalOrigin);
+                    Debug.Log("[RouteSetter][SwitchJunctions] Activate pressed, starting FindPath");
+                    return FindPath();
+
                 default:
-                    throw new System.ArgumentException();
+                    Debug.LogError($"[RouteSetter][SwitchJunctions] Unhandled InputAction: {action}");
+                    throw new System.ArgumentException($"Unhandled InputAction: {action}");
             }
         }
 
-        private SwitchJunctionsStateBehaviour SwitchJunctionsAlongPath(Transform signalOrigin)
+        private SwitchJunctionsStateBehaviour FindPath()
         {
-            string error = ValidatePathFinder(signalOrigin);
-            if (error != null)
-                return new SwitchJunctionsStateBehaviour(error);
+            Debug.Log("[RouteSetter][SwitchJunctions] FindPath: start");
 
-            var playerLoco = PlayerManager.LastLoco;
-            error = ValidatePlayerLoco(playerLoco);
-            if (error != null)
-                return new SwitchJunctionsStateBehaviour(error);
-
-            var playerTrack = playerLoco.Bogies[0]?.track;
-            error = ValidatePlayerTrack(playerTrack);
-            if (error != null)
-                return new SwitchJunctionsStateBehaviour(error);
-
-            string startTrackId = PathFinder.GetRailTrackGraphID(playerTrack);
-            var destinationNode = Switcher.pathFinder.FindStationTrackByName(Destination.StationName, Destination.Yard, Destination.Track);
-            error = ValidateDestinationNode(destinationNode);
-            if (error != null)
-                return new SwitchJunctionsStateBehaviour(error);
-
-            string destinationTrackId = destinationNode.Id;
-            List<string> pathTrackIds = null;
-            int uTurnCount = 0;
-
-            switch (_pathMode)
+            // --- Step 1: get the graph ---
+            Dictionary<TrackID, RailNode> graph = null;
+            try
             {
-                case PathFindingMode.Dijkstra:
-                    pathTrackIds = Switcher.pathFinder.FindShortestPath(startTrackId, destinationTrackId);
-                    break;
-                case PathFindingMode.DijkstraWithoutUTurns:
-                    var result = Switcher.pathFinder.FindShortestPathWithUTurns(startTrackId, destinationTrackId);
-                    pathTrackIds = result.path;
-                    uTurnCount = result.uTurnCount;
-                    break;
-                case PathFindingMode.BFS:
-                    pathTrackIds = Switcher.pathFinder.FindShortestPathBFS(startTrackId, destinationTrackId);
-                    break;
+                graph = GraphHelper.GetGraph();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[RouteSetter][SwitchJunctions] GraphHelper.GetGraph() threw: {ex}");
+                return new SwitchJunctionsStateBehaviour("Error: failed to get graph (see log)");
             }
 
-            error = ValidatePath(pathTrackIds);
-            if (error != null)
-                return new SwitchJunctionsStateBehaviour(error, default, "Click to confirm", _pathMode);
-
-
-            Switcher.routeDrawer.DisplayRoute(pathTrackIds);
-            var trackIndexInPath = BuildTrackIndexInPath(pathTrackIds);
-            var junctionTrackIds = CollectJunctionTrackIds(pathTrackIds);
-
-            var (switchesChanged, junctionsUnset, junctionResults) = SetJunctionsAlongPath(junctionTrackIds, trackIndexInPath, pathTrackIds);
-            var pathInfo = new StringBuilder();
-
-            pathInfo.AppendLine($"Stations:");
-            
-            foreach (string ID in pathTrackIds)
+            if (graph == null)
             {
-                //StationTrack stationTrack = new StationTrack(ID);
-                //if (!string.IsNullOrEmpty(stationTrack.StationName))
-                //{
-                  
-                   // pathInfo.AppendLine(stationTrack.StationName+", "); 
-                    
-                //}
+                Debug.LogError("[RouteSetter][SwitchJunctions] GraphHelper.GetGraph() returned null");
+                return new SwitchJunctionsStateBehaviour("Error: graph is null");
             }
-            
-            string statusMessage = BuildStatusMessage(switchesChanged, junctionsUnset);
-            if (junctionResults.Length > 0)
-                RouteSetterDebug.Log(junctionResults.ToString());
-            RouteSetterDebug.Log($"[RouteSetter] {statusMessage}\n{pathInfo}");
+            Debug.Log($"[RouteSetter][SwitchJunctions] Graph loaded. Node count: {graph.Count}");
 
-            return new SwitchJunctionsStateBehaviour(
-                $"Route:{startTrackId}->{Destination.StationName}-{Destination.Track}\n via:{pathInfo}",
-                default,
-                $"Happy derailing!"
-            );
-        }
-        private string ValidatePathFinder(Transform signalOrigin)
-        {
-            if (signalOrigin == null)
-                return "Invalid location";
-            if (Switcher.pathFinder == null || Switcher.Graph == null)
-                return "PathFinder not initialized";
-            return null;
-        }
+            // --- Step 2: check saved start/end tracks ---
+            var start = PlayerManager.LastLoco.FrontBogie.track.LogicTrack().ID;
+            var end = Switcher.SavedEndTrack;
 
-        private string ValidatePlayerLoco(TrainCar playerLoco)
-        {
-            if (playerLoco == null)
-                return "No locomotive found";
-            return null;
-        }
+            Debug.Log($"[RouteSetter][SwitchJunctions] SavedStartTrack={(start == null ? "null" : start.FullID)}, " +
+                $"SavedEndTrack={(end == null ? "null" : end.FullID)}");
 
-        private string ValidatePlayerTrack(RailTrack playerTrack)
-        {
-            if (playerTrack == null)
-                return "Locomotive not on track";
-            return null;
-        }
-
-        private string ValidateDestinationNode(TrackNode destinationNode)
-        {
-            if (destinationNode == null)
-                return "Destination track not found";
-            return null;
-        }
-
-        private string ValidatePath(List<string> pathTrackIds)
-        {
-            if (pathTrackIds == null || pathTrackIds.Count < 2)
-                return "Unable to find path";
-            return null;
-        }
-
-        private Dictionary<string, int> BuildTrackIndexInPath(List<string> pathTrackIds)
-        {
-            var trackIndexInPath = new Dictionary<string, int>();
-            for (int i = 0; i < pathTrackIds.Count; i++)
-                trackIndexInPath[pathTrackIds[i]] = i;
-            return trackIndexInPath;
-        }
-
-        private List<string> CollectJunctionTrackIds(List<string> pathTrackIds)
-        {
-            var junctionTrackIds = new List<string>();
-            foreach (var trackId in pathTrackIds)
+            if (start == null)
             {
-                if (Switcher.Graph.TryGetValue(trackId, out var trackNode) && trackNode.Junction != null)
-                    junctionTrackIds.Add(trackId);
+                Debug.LogWarning("[RouteSetter][SwitchJunctions] Aborting: SavedStartTrack is null");
+                return new SwitchJunctionsStateBehaviour("Start track not set");
             }
-            return junctionTrackIds;
-        }
-
-        private (int switchesChanged, int junctionsUnset, StringBuilder junctionResults) SetJunctionsAlongPath(
-            List<string> junctionTrackIds,
-            Dictionary<string, int> trackIndexInPath,
-            List<string> pathTrackIds)
-        {
-            int switchesChanged = 0;
-            int junctionsUnset = 0;
-            var junctionResults = new StringBuilder();
-
-            foreach (var junctionTrackId in junctionTrackIds)
+            if (end == null)
             {
-                if (!Switcher.Graph.TryGetValue(junctionTrackId, out var trackNode) || trackNode.Junction == null)
-                    continue;
+                Debug.LogWarning("[RouteSetter][SwitchJunctions] Aborting: SavedEndTrack is null");
+                return new SwitchJunctionsStateBehaviour("End track not set");
+            }
 
-                var junction = trackNode.Junction;
-                int pathIndex = trackIndexInPath[junctionTrackId];
-                if (pathIndex >= pathTrackIds.Count - 1)
-                    continue;
+            // --- Step 3: look up nodes in graph ---
+            Debug.Log($"[RouteSetter][SwitchJunctions] Looking up start track '{start.FullID}' in graph " +
+                $"(graph contains {graph.Count} keys, TrackID.Equals/GetHashCode override present: " +
+                $"{typeof(TrackID).GetMethod("Equals", new[] { typeof(object) }).DeclaringType == typeof(TrackID)})");
 
-                int targetBranchIndex = Switcher.pathFinder.GetBranchForJunction(junctionTrackId, pathTrackIds);
-                if (targetBranchIndex < 0)
+            bool foundStart = TryFindNodeByTrackID(graph, start, out var startNode, out var matchedStartKey);
+            Debug.Log($"[RouteSetter][SwitchJunctions] Start lookup result: found={foundStart}, node={(foundStart ? startNode?.ToString() : "N/A")}");
+
+            bool foundEnd = TryFindNodeByTrackID(graph, end, out var endNode, out var matchedEndKey);
+            Debug.Log($"[RouteSetter][SwitchJunctions] End lookup result: found={foundEnd}, node={(foundEnd ? endNode?.ToString() : "N/A")}");
+            if (!foundStart)
+            {
+                Debug.LogWarning($"[RouteSetter][SwitchJunctions] Start track '{start.FullID}' not found in graph. " +
+                    $"Dumping first 10 graph keys for comparison:");
+                int i = 0;
+                foreach (var key in graph.Keys)
                 {
-                    junctionsUnset++;
-                    junctionResults.AppendLine($" - Junction {junctionTrackId}: Could not determine correct branch");
-                    continue;
+                    if (i++ >= 10) break;
+                    Debug.Log($"[RouteSetter][SwitchJunctions]   graph key: {key?.FullID}");
                 }
-
-                if (junction.selectedBranch == targetBranchIndex)
-                    continue;
-
-                if (TrySetJunctionBranch(junction, targetBranchIndex))
-                {
-                    switchesChanged++;
-                }
-                else
-                {
-                    junctionsUnset++;
-                    junctionResults.AppendLine($" - Junction {junctionTrackId}: Failed to set to branch {targetBranchIndex} (current: {junction.selectedBranch})");
-                }
+                return new SwitchJunctionsStateBehaviour("Start track not found in graph");
             }
-
-            return (switchesChanged, junctionsUnset, junctionResults);
-        }
-
-        private bool TrySetJunctionBranch(Junction junction, int targetBranchIndex)
-        {
-            int initialBranch = junction.selectedBranch;
-            int attempts = 0;
-            int maxAttempts = junction.outBranches.Count * 2;
-
-            while (junction.selectedBranch != targetBranchIndex && attempts < maxAttempts)
+            if (!foundEnd)
             {
-                int before = junction.selectedBranch;
-                junction.Switch(Junction.SwitchMode.REGULAR);
-                int after = junction.selectedBranch;
-                attempts++;
-
-                if (before == after || (attempts >= junction.outBranches.Count && junction.selectedBranch == initialBranch))
-                    break;
+                Debug.LogWarning($"[RouteSetter][SwitchJunctions] End track '{end.FullID}' not found in graph");
+                return new SwitchJunctionsStateBehaviour("End track not found in graph");
             }
 
-            return junction.selectedBranch == targetBranchIndex;
-        }
-
-        private string BuildStatusMessage(int switchesChanged, int junctionsUnset)
-        {
-            if (switchesChanged > 0)
+            if (startNode == null)
             {
-                var msg = $"Path updated: set {switchesChanged} switch(es).";
-                if (junctionsUnset > 0)
-                    msg += $" ({junctionsUnset} switch(es) could not be set correctly)";
-                return msg;
+                Debug.LogError("[RouteSetter][SwitchJunctions] startNode is null despite TryGetValue returning true");
+                return new SwitchJunctionsStateBehaviour("Error: start node null");
             }
-            if (junctionsUnset == 0)
-                return "All switches already correct.";
-            return "Route set";
+            if (endNode == null)
+            {
+                Debug.LogError("[RouteSetter][SwitchJunctions] endNode is null despite TryGetValue returning true");
+                return new SwitchJunctionsStateBehaviour("Error: end node null");
+            }
 
+            // --- Step 4: run pathfinding ---
+            path path = null;
+            try
+            {
+                Debug.Log("[RouteSetter][SwitchJunctions] Calling Pathfiinder.FindPath...");
+                 Pathfiinder.FindPathAndSwitchJunctions(start, end);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[RouteSetter][SwitchJunctions] Pathfiinder.FindPath threw: {ex}");
+                return new SwitchJunctionsStateBehaviour("Error: pathfinding threw (see log)");
+            }
+
+            if (path == null)
+            {
+                Debug.LogError("[RouteSetter][SwitchJunctions] Pathfiinder.FindPath returned null");
+                return new SwitchJunctionsStateBehaviour("Error: no path returned");
+            }
+
+            Debug.Log($"[RouteSetter][SwitchJunctions] Path found. Nodes null? {path.Nodes == null}, " +
+                $"count={path.Nodes?.Length.ToString() ?? "N/A"}, travelTime={path.TravelTime}, avgSpeed={path.AverageSpeed}");
+
+            if (path.Nodes == null || path.Nodes.Length == 0)
+            {
+                Debug.LogWarning("[RouteSetter][SwitchJunctions] Path has no nodes");
+                return new SwitchJunctionsStateBehaviour("Path found but empty");
+            }
+            string textpath="";
+            foreach (var node in path.Nodes) { 
+                 textpath = textpath + ""+node.ID.FullID+$"x{node.position.x} y:{node.position.z}->";
+            }
+            Debug.Log("[RouteSetter][SwitchJunctions] FindPath: success, returning result state");
+            return new SwitchJunctionsStateBehaviour($"Path found: {path.Nodes.Length} waypoints: {textpath} ");
         }
     }
 }
